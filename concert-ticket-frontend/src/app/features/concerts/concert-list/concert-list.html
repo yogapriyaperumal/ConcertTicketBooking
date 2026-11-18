@@ -1,0 +1,206 @@
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div>
+      <h1>Concert Management</h1>
+      <p>Explore and manage available concerts.</p>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-section">
+
+    <form (ngSubmit)="searchConcerts()">
+
+      <input
+        type="text"
+        [formControl]="searchControl"
+        placeholder="Search by concert, artist or genre..."
+      />
+
+      <button type="submit">
+        Search
+      </button>
+
+      <button
+        type="button"
+        class="clear-button"
+        (click)="clearSearch()">
+        Clear
+      </button>
+
+    </form>
+
+  </div>
+
+  <!-- Error message -->
+  @if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="loading">
+      Loading concerts...
+    </div>
+  }
+
+  <!-- Concert list -->
+  @if (!isLoading) {
+
+    <div class="results-info">
+      Total concerts: {{ totalCount }}
+    </div>
+
+    <div class="concert-grid">
+
+      @for (concert of concerts; track concert.concertId) {
+
+        <div class="concert-card">
+
+          @if (concert.imageUrl) {
+            <img
+              [src]="concert.imageUrl"
+              [alt]="concert.concertName"
+              class="concert-image"
+            />
+          } @else {
+            <div class="image-placeholder">
+              No Image Available
+            </div>
+          }
+
+          <div class="concert-content">
+
+            <h2>{{ concert.concertName }}</h2>
+
+            <p class="artist">
+              {{ concert.artistName }}
+            </p>
+
+            <p>
+              <strong>Genre:</strong> {{ concert.genre }}
+            </p>
+
+            <p>
+              <strong>Language:</strong> {{ concert.language }}
+            </p>
+
+            <span class="status">
+              {{ concert.status }}
+            </span>
+
+            <button
+              class="details-button"
+              (click)="viewDetails(concert.concertId)">
+              View Details
+            </button>
+
+          </div>
+
+        </div>
+
+      } @empty {
+
+        <div class="empty-message">
+          No concerts found.
+        </div>
+
+      }
+
+    </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 0) {
+
+      <div class="pagination">
+
+        <button
+          (click)="previousPage()"
+          [disabled]="pageNumber <= 1">
+          Previous
+        </button>
+
+        <span>
+          Page {{ pageNumber }} of {{ totalPages }}
+        </span>
+
+        <button
+          (click)="nextPage()"
+          [disabled]="pageNumber >= totalPages">
+          Next
+        </button>
+
+      </div>
+
+    }
+
+  }
+
+  <!-- Concert Details -->
+  @if (selectedConcert; as concert) {
+
+    <div class="details-overlay">
+
+      <div class="details-card">
+
+        <button
+          class="close-button"
+          (click)="closeDetails()">
+          ×
+        </button>
+
+        <h2>{{ concert.concertName }}</h2>
+
+        <p>
+          <strong>Concert ID:</strong>
+          {{ concert.concertId }}
+        </p>
+
+        <p>
+          <strong>Artist:</strong>
+          {{ concert.artistName }}
+        </p>
+
+        <p>
+          <strong>Description:</strong>
+          {{ concert.description || 'No description available' }}
+        </p>
+
+        <p>
+          <strong>Genre:</strong>
+          {{ concert.genre }}
+        </p>
+
+        <p>
+          <strong>Language:</strong>
+          {{ concert.language }}
+        </p>
+
+        <p>
+          <strong>Status:</strong>
+          {{ concert.status }}
+        </p>
+
+        <p>
+          <strong>Created:</strong>
+          {{ concert.createdAtUtc | date:'medium' }}
+        </p>
+
+        <p>
+          <strong>Updated:</strong>
+          {{ concert.updatedAtUtc
+              ? (concert.updatedAtUtc | date:'medium')
+              : 'Not updated' }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

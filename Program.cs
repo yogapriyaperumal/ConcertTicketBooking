@@ -1,3 +1,4 @@
+
 using ConcertTicketBooking.Data;
 using ConcertTicketBooking.Repositories.Implementations;
 using ConcertTicketBooking.Repositories.Interfaces;
@@ -8,7 +9,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register Controllers
+// 1. Register Controllers
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -17,29 +18,45 @@ builder.Services.AddControllers()
             new JsonStringEnumConverter());
     });
 
-// Register OpenAPI
+// 2. Register OpenAPI
 builder.Services.AddOpenApi();
 
-// Configure SQL Server and EF Core
+// 3. Configure SQL Server and EF Core
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register Repository
+// 4. Register Repository
 builder.Services.AddScoped<IConcertRepository, ConcertRepository>();
 
-// Register Service
+// 5. Register Service
 builder.Services.AddScoped<IConcertService, ConcertService>();
 
+// 6. Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+// Build application
 var app = builder.Build();
 
-// Configure HTTP request pipeline
+// 7. Configure HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS before authorization
+app.UseCors("AllowAngular");
 
 app.UseAuthorization();
 

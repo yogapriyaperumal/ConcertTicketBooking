@@ -1,0 +1,142 @@
+
+<div class="form-container">
+
+  <h2>{{ isEditMode ? 'Update Concert' : 'Create Concert' }}</h2>
+
+  <p class="subtitle">
+    {{ isEditMode ? 'Edit existing concert details' : 'Add a new concert to the system' }}
+  </p>
+
+  @if (loading) {
+    <p class="message">Please wait...</p>
+  }
+
+  @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+  }
+
+  @if (successMessage) {
+    <p class="success-message">{{ successMessage }}</p>
+  }
+
+  <form [formGroup]="concertForm" (ngSubmit)="onSubmit()">
+
+    <!-- Concert Name -->
+    <div class="form-group">
+      <label>Concert Name</label>
+
+      <input
+        type="text"
+        formControlName="concertName"
+        placeholder="Enter concert name"
+      />
+
+      @if (concertForm.controls.concertName.touched &&
+           concertForm.controls.concertName.invalid) {
+        <small class="error-message">
+          Concert name is required (2–150 characters).
+        </small>
+      }
+    </div>
+
+    <!-- Artist Name -->
+    <div class="form-group">
+      <label>Artist Name</label>
+
+      <input
+        type="text"
+        formControlName="artistName"
+        placeholder="Enter artist name"
+      />
+
+      @if (concertForm.controls.artistName.touched &&
+           concertForm.controls.artistName.invalid) {
+        <small class="error-message">
+          Artist name is required (2–150 characters).
+        </small>
+      }
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label>Description</label>
+
+      <textarea
+        formControlName="description"
+        placeholder="Enter concert description"
+        rows="4">
+      </textarea>
+    </div>
+
+    <!-- Genre -->
+    <div class="form-group">
+      <label>Genre</label>
+
+      <input
+        type="text"
+        formControlName="genre"
+        placeholder="Example: Rock, Melody, Classical"
+      />
+
+      @if (concertForm.controls.genre.touched &&
+           concertForm.controls.genre.invalid) {
+        <small class="error-message">
+          Genre is required.
+        </small>
+      }
+    </div>
+
+    <!-- Language -->
+    <div class="form-group">
+      <label>Language</label>
+
+      <input
+        type="text"
+        formControlName="language"
+        placeholder="Example: Tamil, English"
+      />
+
+      @if (concertForm.controls.language.touched &&
+           concertForm.controls.language.invalid) {
+        <small class="error-message">
+          Language is required.
+        </small>
+      }
+    </div>
+
+    <!-- Image URL -->
+    <div class="form-group">
+      <label>Image URL</label>
+
+      <input
+        type="text"
+        formControlName="imageUrl"
+        placeholder="Enter image URL"
+      />
+    </div>
+
+    <!-- Status -->
+    <div class="form-group">
+      <label>Status</label>
+
+      <select formControlName="status">
+        <option value="Draft">Draft</option>
+        <option value="Published">Published</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" [disabled]="loading">
+      {{ isEditMode ? 'Update Concert' : 'Create Concert' }}
+    </button>
+
+    <button
+      type="button"
+      class="cancel-button"
+      (click)="router.navigate(['/concerts'])">
+      Cancel
+    </button>
+
+  </form>
+</div>
